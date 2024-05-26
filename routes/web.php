@@ -20,3 +20,6 @@ $router->get('/', function () use ($router) {
 
 $router->get('/book', 'GatewayController@searchBooks');
 $router->get('/ebooks/{keyword}', 'GatewayController@getFreeEbooks');
+$router->get('/search/manga/{query}', 'GatewayController@searchManga');
+
+

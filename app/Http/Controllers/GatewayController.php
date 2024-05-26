@@ -76,4 +76,40 @@ class GatewayController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-}
+    
+            public function searchManga(Request $request, $query)
+            {
+                $client = new Client();
+        
+                $apiKey = 'ba1deebabcmsh955b1ce5d6aa0e6p1f0d7bjsn675e90de3bfd'; // Replace with your actual API key
+        
+                if (!$apiKey) {
+                    return response()->json(['error' => 'Missing RAPIDAPI_KEY environment variable'], 401);
+                }
+        
+                $params = [
+                    'q' => $query,
+                    'n' => 50, // Number of results (optional, adjust as needed)
+                    'score' => 0, // Minimum score (optional)
+                    'genre' => 1, // Genre ID (optional, adjust as needed)
+                ];
+        
+                try {
+                    $url = 'https://myanimelist.p.rapidapi.com/v2/manga/search?' . http_build_query($params);
+                    $headers = [
+                        'X-RapidAPI-Host' => 'myanimelist.p.rapidapi.com',
+                        'X-RapidAPI-Key' => $apiKey,
+                    ];
+        
+                    $response = $client->get($url, ['headers' => $headers]);
+        
+                    if ($response->getStatusCode() === 200) {
+                        return response()->json(json_decode($response->getBody(), true));
+                    } else {
+                        return response()->json(['error' => 'Failed to retrieve manga data'], $response->getStatusCode());
+                    }
+                } catch (RequestException $e) {
+                    return response()->json(['error' => 'Error fetching manga data: ' . $e->getMessage()], 500);
+                }
+            }
+        }
